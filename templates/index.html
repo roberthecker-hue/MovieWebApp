@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-section">
+    <h1>Users</h1>
+    <ul class="user-list">
+        {% for user in users %}
+        {% set count = movie_counts.get(user.id, 0) %}
+        <li class="user-item">
+            <a href="{{ url_for('get_movies', user_id=user.id) }}" class="btn btn-user">{{ user.name }}</a>
+            <form action="{{ url_for('delete_user', user_id=user.id) }}"
+                  method="post"
+                  class="user-delete-form"
+                  data-user-name="{{ user.name }}"
+                  data-movie-count="{{ count }}">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </li>
+        {% else %}
+        <p>No users yet. Add one below!</p>
+        {% endfor %}
+    </ul>
+
+    <hr>
+
+    <h2>Add New User</h2>
+    <form action="{{ url_for('create_user') }}" method="post" class="form-inline">
+        <input type="text" name="name" placeholder="Enter user name" required class="input-text">
+        <button type="submit" class="btn btn-primary">Create User</button>
+    </form>
+</div>
+
+<div id="deleteModal" class="modal-backdrop">
+    <div class="modal-box">
+        <h3>Achtung</h3>
+        <p id="modalText"></p>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-user" onclick="closeDeleteModal()">Zurück</button>
+            <button type="button" class="btn btn-danger" style="width: auto;" onclick="confirmDelete()">Trotzdem löschen</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let formToSubmit = null;
+
+    document.querySelectorAll(".user-delete-form").forEach(form => {
+        form.addEventListener("submit", function (event) {
+            const movieCount = parseInt(this.dataset.movieCount, 10) || 0;
+            if (movieCount > 0) {
+                event.preventDefault();
+                formToSubmit = this;
+                const userName = this.dataset.userName;
+                const filmWort = movieCount === 1 ? "Film" : "Filme";
+                document.getElementById("modalText").textContent =
+                    `Der User "${userName}" hat noch ${movieCount} ${filmWort} auf der Liste. Beim Löschen werden alle Filme mitgelöscht.`;
+                document.getElementById("deleteModal").style.display = "flex";
+            }
+        });
+    });
+
+    function closeDeleteModal() {
+        document.getElementById("deleteModal").style.display = "none";
+        formToSubmit = null;
+    }
+
+    function confirmDelete() {
+        if (formToSubmit) {
+            formToSubmit.submit();
+        }
+    }
+</script>
+{% endblock %}

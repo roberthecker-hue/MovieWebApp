@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtuelle Umgebung
+venv/
+.venv/
+env/
+
+# Lokale SQLite-Datenbank
+data/
+*.db
+*.sqlite3
+
+# macOS & IDEs
+.DS_Store
+.idea/
+.vscode/
+
+# Umgebungsvariablen (falls du den API-Key später auslagerst)
+.env
