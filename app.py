@@ -18,6 +18,9 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 data_manager = DataManager()
 
+with app.app_context():
+    db.create_all()
+
 OMDB_API_KEY = "trilogy"  # Replace with your custom OMDb API key if needed
 
 
@@ -113,6 +116,4 @@ def page_not_found(e):
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
